@@ -42,6 +42,26 @@ Khi tiến hành kiểm tra một dự án/skill, hãy lần lượt quét qua c
   WORKSHEET_NAME = os.getenv('WORKSHEET_NAME')
   ```
 
+### 4. Môi Trường Ảo Python (venv) - Bắt Buộc
+- **Nguyên tắc**: Mỗi dự án phải có môi trường ảo riêng để tránh xung đột thư viện giữa các project.
+- **Tạo venv** (chỉ làm 1 lần trên mỗi máy):
+  ```powershell
+  python -m venv venv
+  ```
+  > ⚠️ Dùng `python -m venv` (không dùng `py -m venv`) để đảm bảo tương thích.
+- **Cài thư viện** vào đúng venv của dự án:
+  ```powershell
+  .\venv\Scripts\Activate.ps1
+  pip install --upgrade pip
+  pip install <các-thư-viện-cần-thiết>
+  ```
+- **Lệnh chạy script** phải dùng python trong venv (không dùng `python` hệ thống):
+  ```powershell
+  .\venv\Scripts\python.exe .agent\skills\scripts\<TenScript>.py
+  ```
+- **Gitignore**: Thư mục `venv/` phải được liệt kê trong `.gitignore`.
+- **Kiểm tra vi phạm**: Nếu SKILL.md ghi lệnh chạy là `python script.py` hoặc `py script.py` (không qua venv) → coi là vi phạm chuẩn.
+
 ---
 
 ## 🛠 QUY TRÌNH THỰC HIỆN CỦA AI
@@ -50,7 +70,11 @@ Khi người dùng gọi skill này để kiểm tra một thư mục dự án, 
 1. **Kiểm tra `SKILL.md`**: Đọc file này (thường nằm ở root hoặc thư mục `.agents/skills/...`), phân tích phần frontmatter (yaml) xem `name` và `description` đã chuẩn chưa.
 2. **Tìm kiếm lỗi Hardcode**: Dùng công cụ (như `grep_search`) quét các file `.py` tìm `C:\`, `D:\`, `SPREADSHEET_ID = "..."` (hardcode string).
 3. **Kiểm tra `.env`**: Xác nhận sự tồn tại của file `.env` và các biến môi trường cần thiết có được khai báo ở đó không.
-4. **Báo cáo và Đề xuất**: Liệt kê các lỗi vi phạm và đề xuất cách sửa (hoặc trực tiếp sửa bằng tool code edit nếu người dùng cho phép).
+4. **Kiểm tra venv**:
+   - Thư mục `venv/` có tồn tại ở thư mục gốc dự án không? Nếu chưa → chạy `python -m venv venv` ngay.
+   - Lệnh chạy trong `SKILL.md` có dùng `.\venv\Scripts\python.exe` không? Nếu không → cập nhật.
+   - File `.gitignore` có dòng `venv/` không? Nếu không → bổ sung.
+5. **Báo cáo và Đề xuất**: Liệt kê các lỗi vi phạm và đề xuất cách sửa (hoặc trực tiếp sửa bằng tool code edit nếu người dùng cho phép).
 
 ---
 *Ghi chú: Chuẩn này được xây dựng dựa trên sự thống nhất cấu trúc của các dự án:*
